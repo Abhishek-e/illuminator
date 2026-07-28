@@ -1,0 +1,141 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply font-body text-ink bg-paper;
+  background-image:
+    repeating-linear-gradient(
+      to bottom,
+      rgba(91, 95, 239, 0.08) 0px,
+      rgba(91, 95, 239, 0.08) 1px,
+      transparent 1px,
+      transparent 38px
+    );
+  background-attachment: local;
+}
+
+h1, h2, h3, h4, .font-hand {
+  font-family: 'Kalam', cursive;
+}
+
+/* Hand-drawn wobble filter applied to sketch elements */
+.sketchy {
+  filter: url(#roughen);
+}
+
+.sketch-border {
+  border: 2.5px solid theme('colors.ink.DEFAULT');
+  border-radius: 255px 15px 225px 15px / 15px 225px 15px 255px;
+}
+
+.sketch-border-alt {
+  border: 2.5px solid theme('colors.ink.DEFAULT');
+  border-radius: 15px 255px 15px 225px / 225px 15px 255px 15px;
+}
+
+.sketch-card {
+  @apply bg-paper-light sketch-border shadow-sketch;
+}
+
+.tape {
+  position: relative;
+}
+
+.tape::before {
+  content: '';
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%) rotate(-3deg);
+  width: 70px;
+  height: 26px;
+  background: rgba(255, 214, 102, 0.55);
+  border: 1px solid rgba(44, 42, 38, 0.15);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
+
+.marker-highlight {
+  background-image: linear-gradient(105deg, transparent 0%, transparent 4%, rgba(255,183,3,0.55) 4%, rgba(255,183,3,0.55) 96%, transparent 96%);
+  padding: 0 0.15em;
+}
+
+.underline-squiggle {
+  position: relative;
+  display: inline-block;
+}
+
+.underline-squiggle::after {
+  content: '';
+  position: absolute;
+  left: -2%;
+  right: -2%;
+  bottom: -0.12em;
+  height: 0.4em;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M0 12 Q 15 2, 30 12 T 60 12 T 90 12 T 120 12 T 150 12 T 180 12 T 210 12' stroke='%23FF6B6B' stroke-width='5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x;
+  background-size: 60px 20px;
+  z-index: -1;
+}
+
+.underline-squiggle-hover {
+  position: relative;
+}
+
+.underline-squiggle-hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -6px;
+  height: 8px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 20' preserveAspectRatio='none'%3E%3Cpath d='M0 12 Q 15 2, 30 12 T 60 12 T 90 12 T 120 12 T 150 12 T 180 12 T 210 12' stroke='%23FFB703' stroke-width='6' fill='none' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x;
+  background-size: 44px 16px;
+  opacity: 0;
+  transform: scaleX(0.85);
+  transform-origin: left center;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  pointer-events: none;
+}
+
+.underline-squiggle-hover:hover::after {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.dashed-connector {
+  border-top: 3px dashed rgba(44, 42, 38, 0.35);
+}
+
+::selection {
+  background: rgba(255, 183, 3, 0.55);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-marquee {
+  animation: marquee 26s linear infinite;
+}
+
+.mask-fade {
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
