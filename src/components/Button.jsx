@@ -34,7 +34,7 @@ export default function Button({
 
   if (to) {
     return (
-      <MotionLink to={to} className={classes} {...motionProps}>
+      <MotionLink to={to} onClick={onClick} className={classes} {...motionProps}>
         {children}
       </MotionLink>
     )

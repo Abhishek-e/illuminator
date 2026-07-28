@@ -12,29 +12,61 @@ const categorySuggestions = ['CRM', 'ERM', 'Automation', 'Analytics', 'Complianc
 
 export default function AdminDashboard() {
   const { session, logout } = useAuth()
-  const { products, addProduct, removeProduct } = useProducts()
+  const { products, ready, addProduct, removeProduct, seedDemoProducts } = useProducts()
   const [form, setForm] = useState(emptyForm)
   const [message, setMessage] = useState('')
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+  const [seeding, setSeeding] = useState(false)
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }))
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault()
     if (!form.name.trim() || !form.tagline.trim() || !form.category.trim()) return
 
-    addProduct({
-      name: form.name.trim(),
-      tagline: form.tagline.trim(),
-      description: form.description.trim() || form.tagline.trim(),
-      category: form.category.trim(),
-      icon: form.icon,
-      link: form.link.trim() || '#',
-    })
-    setMessage(`"${form.name.trim()}" is now live on the Products page!`)
-    setForm(emptyForm)
-    setTimeout(() => setMessage(''), 4000)
+    setSaving(true)
+    setError('')
+    try {
+      await addProduct({
+        name: form.name.trim(),
+        tagline: form.tagline.trim(),
+        description: form.description.trim() || form.tagline.trim(),
+        category: form.category.trim(),
+        icon: form.icon,
+        link: form.link.trim() || '#',
+      })
+      setMessage(`"${form.name.trim()}" is now live on the Products page!`)
+      setForm(emptyForm)
+      setTimeout(() => setMessage(''), 4000)
+    } catch (err) {
+      setError(err.message || 'Could not publish that product.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  async function handleRemove(id) {
+    setError('')
+    try {
+      await removeProduct(id)
+    } catch (err) {
+      setError(err.message || 'Could not remove that product.')
+    }
+  }
+
+  async function handleSeed() {
+    setSeeding(true)
+    setError('')
+    try {
+      await seedDemoProducts()
+    } catch (err) {
+      setError(err.message || 'Could not seed demo products.')
+    } finally {
+      setSeeding(false)
+    }
   }
 
   const sorted = [...products].sort((a, b) => b.addedAt - a.addedAt)
@@ -131,9 +163,11 @@ export default function AdminDashboard() {
               </div>
             </FormField>
 
-            <Button type="submit" variant="primary" className="w-full justify-center">
-              Publish product
+            <Button type="submit" variant="primary" disabled={saving} className="w-full justify-center">
+              {saving ? 'Publishing…' : 'Publish product'}
             </Button>
+
+            {error && <p className="text-marker font-body text-sm bg-marker/10 sketch-border px-3 py-2">{error}</p>}
 
             <AnimatePresence>
               {message && (
@@ -175,7 +209,7 @@ export default function AdminDashboard() {
                       </p>
                     </div>
                     <button
-                      onClick={() => removeProduct(p.id)}
+                      onClick={() => handleRemove(p.id)}
                       className="font-hand text-marker text-sm shrink-0 hover:underline"
                     >
                       Remove
@@ -184,8 +218,13 @@ export default function AdminDashboard() {
                 )
               })}
             </AnimatePresence>
-            {sorted.length === 0 && (
-              <p className="font-body text-ink-soft text-center py-10">No products yet — add your first one!</p>
+            {ready && sorted.length === 0 && (
+              <div className="text-center py-10">
+                <p className="font-body text-ink-soft mb-4">No products yet — add your first one, or:</p>
+                <Button onClick={handleSeed} variant="outline" disabled={seeding} className="mx-auto">
+                  {seeding ? 'Seeding…' : 'Seed 6 demo products'}
+                </Button>
+              </div>
             )}
           </div>
         </div>

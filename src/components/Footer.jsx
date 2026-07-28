@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { IconBulb, IconSpark } from './icons/DoodleIcons'
 import Button from './Button'
+import { useSectionLink } from '../lib/sectionLink'
 
 export default function Footer() {
   const [email, setEmail] = useState('')
   const [subscribed, setSubscribed] = useState(false)
+  const goToSection = useSectionLink()
 
   function handleSubscribe(e) {
     e.preventDefault()
@@ -33,19 +35,19 @@ export default function Footer() {
           <h4 className="font-hand text-xl mb-4 text-bulb-light">Explore</h4>
           <ul className="space-y-2 text-paper-light/80">
             <li>
-              <Link to="/#features" className="hover:text-bulb">Features</Link>
+              <Link to="/" onClick={(e) => goToSection(e, 'features')} className="hover:text-bulb">Features</Link>
             </li>
             <li>
               <Link to="/products" className="hover:text-bulb">Products</Link>
             </li>
             <li>
-              <Link to="/#how-it-works" className="hover:text-bulb">How it Works</Link>
+              <Link to="/" onClick={(e) => goToSection(e, 'how-it-works')} className="hover:text-bulb">How it Works</Link>
             </li>
             <li>
-              <Link to="/#testimonials" className="hover:text-bulb">Testimonials</Link>
+              <Link to="/" onClick={(e) => goToSection(e, 'testimonials')} className="hover:text-bulb">Testimonials</Link>
             </li>
             <li>
-              <Link to="/#faq" className="hover:text-bulb">FAQ</Link>
+              <Link to="/" onClick={(e) => goToSection(e, 'faq')} className="hover:text-bulb">FAQ</Link>
             </li>
           </ul>
         </div>

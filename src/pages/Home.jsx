@@ -15,8 +15,9 @@ export default function Home() {
   const location = useLocation()
 
   useEffect(() => {
-    if (location.hash) {
-      const el = document.querySelector(location.hash)
+    const sectionId = location.state?.scrollTo
+    if (sectionId) {
+      const el = document.getElementById(sectionId)
       if (el) {
         requestAnimationFrame(() => el.scrollIntoView({ behavior: 'smooth', block: 'start' }))
       }

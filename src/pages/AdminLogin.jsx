@@ -10,7 +10,7 @@ export default function AdminLogin() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { adminLogin, session, adminEmailHint, adminPasswordHint } = useAuth()
+  const { adminLogin, session } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -73,12 +73,12 @@ export default function AdminLogin() {
 
         <div className="tape sketch-card bg-bulb/20 mt-8 mx-6 p-4 rotate-[-2deg] relative">
           <p className="font-hand text-sm flex items-center gap-1 text-ink-soft">
-            <IconPin className="w-4 h-4" /> Demo credentials
+            <IconPin className="w-4 h-4" /> New here?
           </p>
-          <p className="font-body text-sm mt-1">
-            <span className="font-semibold">{adminEmailHint}</span>
-            <br />
-            <span className="font-semibold">{adminPasswordHint}</span>
+          <p className="font-body text-sm mt-1 text-ink-soft">
+            Sign in with any account you've created, then add its user ID as a document in the{' '}
+            <span className="font-semibold">admins</span> collection in the Firebase console to unlock this
+            dashboard.
           </p>
         </div>
 

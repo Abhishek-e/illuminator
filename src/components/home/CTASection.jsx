@@ -1,8 +1,10 @@
 import Reveal from '../Reveal'
 import Button from '../Button'
 import { IconBulb } from '../icons/DoodleIcons'
+import { useSectionLink } from '../../lib/sectionLink'
 
 export default function CTASection() {
+  const goToSection = useSectionLink()
   return (
     <section className="max-w-6xl mx-auto px-6 md:px-8 py-10">
       <Reveal>
@@ -16,7 +18,7 @@ export default function CTASection() {
             <Button to="/login" variant="primary" className="text-xl px-8 py-3.5">
               Create your free account
             </Button>
-            <Button to="/#contact" variant="outline" className="text-xl px-8 py-3.5">
+            <Button to="/" onClick={(e) => goToSection(e, 'contact')} variant="outline" className="text-xl px-8 py-3.5">
               Talk to us
             </Button>
           </div>

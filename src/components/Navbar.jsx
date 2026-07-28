@@ -4,19 +4,21 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { IconBulb, IconMenu, IconClose } from './icons/DoodleIcons'
 import Button from './Button'
 import { useAuth } from '../context/AuthContext'
+import { useSectionLink } from '../lib/sectionLink'
 
 const navLinks = [
-  { label: 'Features', to: '/#features' },
-  { label: 'How it Works', to: '/#how-it-works' },
+  { label: 'Features', sectionId: 'features' },
+  { label: 'How it Works', sectionId: 'how-it-works' },
   { label: 'Products', to: '/products' },
-  { label: 'Testimonials', to: '/#testimonials' },
-  { label: 'FAQ', to: '/#faq' },
+  { label: 'Testimonials', sectionId: 'testimonials' },
+  { label: 'FAQ', sectionId: 'faq' },
 ]
 
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const { session, isAdmin, logout } = useAuth()
   const location = useLocation()
+  const goToSection = useSectionLink()
 
   useEffect(() => {
     setOpen(false)
@@ -34,7 +36,12 @@ export default function Navbar() {
 
         <nav className="hidden xl:flex items-center gap-6 font-hand text-lg shrink-0">
           {navLinks.map((link) => (
-            <Link key={link.label} to={link.to} className="underline-squiggle-hover hover:text-bulb-dark transition-colors">
+            <Link
+              key={link.label}
+              to={link.to || '/'}
+              onClick={link.sectionId ? (e) => goToSection(e, link.sectionId) : undefined}
+              className="underline-squiggle-hover hover:text-bulb-dark transition-colors"
+            >
               {link.label}
             </Link>
           ))}
@@ -84,7 +91,11 @@ export default function Navbar() {
           >
             <div className="flex flex-col gap-4 px-6 py-6 font-hand text-lg">
               {navLinks.map((link) => (
-                <Link key={link.label} to={link.to}>
+                <Link
+                  key={link.label}
+                  to={link.to || '/'}
+                  onClick={link.sectionId ? (e) => goToSection(e, link.sectionId) : undefined}
+                >
                   {link.label}
                 </Link>
               ))}
