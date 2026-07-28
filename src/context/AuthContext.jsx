@@ -2,6 +2,8 @@ import { createContext, useContext, useEffect, useState, useCallback } from 'rea
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
   signOut,
   updateProfile,
   onAuthStateChanged,
@@ -10,6 +12,7 @@ import { doc, getDoc } from 'firebase/firestore'
 import { auth, db } from '../lib/firebase'
 
 const AuthContext = createContext(null)
+const googleProvider = new GoogleAuthProvider()
 
 async function checkIsAdmin(uid) {
   const snap = await getDoc(doc(db, 'admins', uid))
@@ -71,6 +74,26 @@ export function AuthProvider({ children }) {
     return nextSession
   }, [])
 
+  const loginWithGoogle = useCallback(async () => {
+    const cred = await signInWithPopup(auth, googleProvider)
+    const isAdmin = await checkIsAdmin(cred.user.uid)
+    const nextSession = toSession(cred.user, isAdmin)
+    setSessionState(nextSession)
+    return nextSession
+  }, [])
+
+  const adminLoginWithGoogle = useCallback(async () => {
+    const cred = await signInWithPopup(auth, googleProvider)
+    const isAdmin = await checkIsAdmin(cred.user.uid)
+    if (!isAdmin) {
+      await signOut(auth)
+      throw new Error('This account does not have admin access.')
+    }
+    const nextSession = toSession(cred.user, true)
+    setSessionState(nextSession)
+    return nextSession
+  }, [])
+
   const logout = useCallback(async () => {
     await signOut(auth)
     setSessionState(null)
@@ -85,6 +108,8 @@ export function AuthProvider({ children }) {
     signup,
     login,
     adminLogin,
+    loginWithGoogle,
+    adminLoginWithGoogle,
     logout,
   }
 

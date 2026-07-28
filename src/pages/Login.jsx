@@ -5,13 +5,14 @@ import { useAuth } from '../context/AuthContext'
 import Button from '../components/Button'
 import FormField, { inputClass } from '../components/FormField'
 import { IconBulb, IconCheck } from '../components/icons/DoodleIcons'
+import GoogleIcon from '../components/icons/GoogleIcon'
 
 export default function Login() {
   const [mode, setMode] = useState('signin')
   const [form, setForm] = useState({ name: '', email: '', password: '', confirm: '' })
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login, signup, session } = useAuth()
+  const { login, signup, loginWithGoogle, session } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -53,6 +54,19 @@ export default function Login() {
       } else {
         await login({ email: form.email.trim(), password: form.password })
       }
+      navigate('/')
+    } catch (err) {
+      setError(err.message || 'Something went wrong.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setError('')
+    setLoading(true)
+    try {
+      await loginWithGoogle()
       navigate('/')
     } catch (err) {
       setError(err.message || 'Something went wrong.')
@@ -168,6 +182,21 @@ export default function Login() {
               </Button>
             </motion.form>
           </AnimatePresence>
+
+          <div className="flex items-center gap-3 my-6">
+            <span className="h-px flex-1 bg-ink/10" />
+            <span className="font-hand text-ink-soft text-sm">or</span>
+            <span className="h-px flex-1 bg-ink/10" />
+          </div>
+
+          <Button
+            onClick={handleGoogleLogin}
+            variant="outline"
+            disabled={loading}
+            className="w-full justify-center gap-3"
+          >
+            <GoogleIcon className="w-5 h-5" /> Continue with Google
+          </Button>
 
           <p className="text-center font-body text-sm text-ink-soft mt-6">
             Are you an admin?{' '}

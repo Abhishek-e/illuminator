@@ -4,13 +4,14 @@ import { useAuth } from '../context/AuthContext'
 import Button from '../components/Button'
 import FormField, { inputClass } from '../components/FormField'
 import { IconShield, IconPin } from '../components/icons/DoodleIcons'
+import GoogleIcon from '../components/icons/GoogleIcon'
 
 export default function AdminLogin() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { adminLogin, session } = useAuth()
+  const { adminLogin, adminLoginWithGoogle, session } = useAuth()
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -23,6 +24,19 @@ export default function AdminLogin() {
     setLoading(true)
     try {
       await adminLogin({ email, password })
+      navigate('/admin/dashboard')
+    } catch (err) {
+      setError(err.message || 'Something went wrong.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  async function handleGoogleLogin() {
+    setError('')
+    setLoading(true)
+    try {
+      await adminLoginWithGoogle()
       navigate('/admin/dashboard')
     } catch (err) {
       setError(err.message || 'Something went wrong.')
@@ -69,6 +83,21 @@ export default function AdminLogin() {
               {loading ? 'Checking…' : 'Enter Dashboard'}
             </Button>
           </form>
+
+          <div className="flex items-center gap-3 my-6">
+            <span className="h-px flex-1 bg-ink/10" />
+            <span className="font-hand text-ink-soft text-sm">or</span>
+            <span className="h-px flex-1 bg-ink/10" />
+          </div>
+
+          <Button
+            onClick={handleGoogleLogin}
+            variant="outline"
+            disabled={loading}
+            className="w-full justify-center gap-3"
+          >
+            <GoogleIcon className="w-5 h-5" /> Continue with Google
+          </Button>
         </div>
 
         <div className="tape sketch-card bg-bulb/20 mt-8 mx-6 p-4 rotate-[-2deg] relative">
